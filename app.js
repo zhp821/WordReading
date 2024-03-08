@@ -10,7 +10,7 @@ App({
     wx.login({
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        // console.log('wx.getUserInfo -> res',res)
+        console.log('wx.getUserInfo -> res',res)
       }
     })
     // 获取用户信息
@@ -35,7 +35,7 @@ App({
     })
     // 云服务初始化
     wx.cloud.init({
-      env: 'release-bf6b22'
+      env: 'cloud1-6gyjpsnqca2b4f98'
     })
     // 检查是否获取到OpenId
     var app = this

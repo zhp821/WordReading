@@ -927,7 +927,7 @@ Page({
 
     dictTran = wechatSI
     // dictTran = youdao
-    dict = iciba
+    dict = youdao
     //SetPosition 实例化
     sp = new setPositionClass()
     sp.setScreenSize()  // 获取屏幕尺寸
@@ -1061,10 +1061,11 @@ Page({
       explainBox_position: positionData
     })
     if(query_word != ''){
+      console.log(query_word)
       // setData查词结果,位置
       let result_data = await dict.queryWord(query_word)
       result_data.id = id;
-      // console.log('result_data----->',result_data)
+      console.log('result_data----->',result_data)
       this.setData({
          lookUp_result: result_data,
       })
