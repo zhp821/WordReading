@@ -42,9 +42,9 @@ function todoClass(){
     let todoD = wx.getStorageSync('todo');
     if (!todoD) {
       todoD = [
-        '⛳可以在这里记下要做的事！',
-        '👉比如每天阅读一小时 🎓',
-        '💡记的坚持下去哦，✊加油！',
+        '真实姓名',
+        '手机号',
+        '家庭Or学校地址',
         '☁☕💡📝🔍❌❗',
       ]
     }

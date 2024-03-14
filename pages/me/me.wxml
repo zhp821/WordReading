@@ -16,7 +16,7 @@
   <block wx:for="{{todo}}" wx:for-index="index">
     <view class="todo-bar" data-index="{{index}}" data-todo="edit" bindtap="{{me.inputTodo}}">{{item}}</view>
   </block>
-  <view class="todo-bar" data-todo="new" bindtap="{{me.inputTodo}}">+</view>
+  <!--view class="todo-bar" data-todo="new" bindtap="{{me.inputTodo}}">+</view-->
 
   <view class="share-button">
     <text>分享</text>

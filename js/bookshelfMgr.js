@@ -11,9 +11,10 @@ function bookshelfClass(){
   this.user_path = `${wx.env.USER_DATA_PATH}/bookshelf/`;
   // this.booksInfo_path = `${wx.env.USER_DATA_PATH}/bookshelf/bookInfo.info`;
   this.cloud = {
-    fileidPre:'cloud://release-bf6b22.7265-release-bf6b22/',
-    user_bs: 'user',  // 4月12日改为 'user'  旧的：/user_bookshelf
+    fileidPre:'cloud://release/',
+    user_bs: 'user_book',  // 4月12日改为 'user'  旧的：/user_bookshelf
     share_bs:'share_bookshelf',
+    user_info:'user',
   }
   this.cache = {
     key:'bookCache',
@@ -304,7 +305,6 @@ function bookshelfClass(){
 
     wx.setStorageSync(this.cache['key'],text)
     var t = wx.getStorageSync(this.cache['key'])
-    console.log('ttt====================>',t)
 
     var info = this.getBookInfo(book['id'])
 
@@ -415,7 +415,7 @@ function bookshelfClass(){
           const _ = db.command
           var bookId = info[1]['id']
           bookId = bookId.replace(/\./g, '*')
-          db.collection('user').doc(openId).update({
+          db.collection('user_book').doc(openId).update({
             data: {
               [bookId]: _.remove()
             },
@@ -598,7 +598,7 @@ function bookshelfClass(){
 
     // 直接update_.set
     var db_update = await new Promise((resolve,reject)=>{
-      db.collection('user').doc(openId).update({
+      db.collection('user_book').doc(openId).update({
         data: {
           [bookId]: _.set(db_book)
         },
@@ -617,7 +617,7 @@ function bookshelfClass(){
     if (db_update.stats.updated == 0){
       // 上传失败，1.用户未使用过，add
       var db_add = await new Promise((resolve,reject)=>{
-        db.collection('user').add({
+        db.collection('user_book').add({
           data:{
             _id: openId
           },
@@ -634,7 +634,7 @@ function bookshelfClass(){
       })
       // 重新set
       var db_update = await new Promise((resolve, reject) => {
-        db.collection('user').doc(openId).update({
+        db.collection('user_book').doc(openId).update({
           data: {
             [bookId]: _.set(db_book)
           },
@@ -727,7 +727,7 @@ function bookshelfClass(){
       console.log('get openId ->', openId)
     }
     let data = await new Promise((resolve)=>{
-      db.collection('user').where({
+      db.collection('user_book').where({
         _id: openId
       }).get({
         success(res) {
