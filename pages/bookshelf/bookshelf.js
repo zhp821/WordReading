@@ -284,13 +284,13 @@ Page({
   setCurrentBook:function(e){
     console.log('set currentBook----')
     let id = e.currentTarget.dataset.id;
-    // console.log('set current book ->',currentBook,e)
+    console.log('set current book ->',currentBook,e)
     let currentBookInfo = getBookInfo(id)
     let local;
     let upload;
     let share;
     let type = 1;
-    if ('cloud' in currentBookInfo){
+    if (currentBookInfo != 'undefined' && 'cloud' in currentBookInfo){
       local = true;
       type = 1
       if (currentBookInfo.cloud.length > 0){
@@ -330,7 +330,7 @@ Page({
     this.setData({
       booksList: booksList
     })
-    this.setCloudBookList(request=false)
+    this.setCloudBookList(request=true)
   },
 
   deleteBook:async function(e){
@@ -366,9 +366,9 @@ Page({
       console.log('没有指定cloud，全删')
       await bookMgr.deleteBook(id)
     }
-    // console.log('test_delete_book modal tip ->',certain)
+    console.log('test_delete_book modal tip ->',certain)
     let that = this
-    setTimeout(() => {
+    setTimeout((that) => {
       this.refreshPage()
     }, 200)
   },
@@ -450,7 +450,7 @@ Page({
     that = this
     
     setTimeout((that)=>{
-      that.refreshPage()
+      this.refreshPage()
     },200)
 
   },
