@@ -13,8 +13,5 @@ $RECYCLE.BIN/
 # Node.js
 node_modules/
 
-# CloudFunction 云函数
-cloudFunction/
-
 # WordReading
 js/bookshelfMgr.md
