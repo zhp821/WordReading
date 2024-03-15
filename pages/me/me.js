@@ -62,6 +62,19 @@ function todoClass(){
       console.log('删除')
     }
     this.setD()
+    wx.cloud.callFunction({
+      // 云函数名称
+      name: 'saveUserInfo',
+      // 传给云函数的参数
+      data: {
+        number: index,
+        text:text,
+      },
+      success: function(res) {
+        console.log(res.result)
+      },
+      fail: console.error
+    })
   }
 
   // 添加

@@ -54,7 +54,6 @@ App({
         app.storageOpenId()
       }
     })
-
   },
   globalData: {
     userInfo: null,
@@ -76,6 +75,10 @@ App({
       }).then(res=>{
         // console.log('promise then ->',res.result.openid)
         var openid = res.result.openid
+        wx.setStorage({
+            key: 'role',
+            data: res.result.role
+          })
         resolve(openid)
       })
     })
