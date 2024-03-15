@@ -698,7 +698,7 @@ function getClipboardClass() {
     // console.log('text ->',text)
     var bookMgr = new bookmgr.bookshelfClass()
     // var id = bookMgr.addCacheByText(text)
-    var id = await bookMgr.addBookByText(text,'剪贴板导入','20190503-00-CLIP')
+    var id = await bookMgr.addBookByText(text,'剪贴板导入','')
     console.log('导入id——》',id)
     article.bookMain(id)
   }

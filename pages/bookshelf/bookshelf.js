@@ -7,7 +7,7 @@ var inputDo;       // 记录调用input的原因，要干什么
 var booksList; 
 var cloudBooksList;
 var bookshelf;   // 当前页面引用， 用户setData或调用页面内函数
-
+var role=wx.getStorageSync('role')
 
 async function getClipboardData(){
   var data = await new Promise((resolve) => {
@@ -149,6 +149,7 @@ Page({
     inputText:'',      // input value值
     cloudBooksList:[],   // 云端book
     currentBook:{},     // 点击book的信息
+    role:wx.getStorageSync('role'),
   },
 
   /**
@@ -336,6 +337,7 @@ Page({
   deleteBook:async function(e){
     //  test delete book 
     var id = e.currentTarget.dataset.id
+    console.log("****del id ->",id)
     let bookshelf;
     if(id == undefined && 'id' in currentBook){
       id = currentBook['id']
@@ -359,7 +361,7 @@ Page({
 
     if(certain && bookshelf=="cloud"){
       // 仅删除云端
-      console.log('仅删除云端')
+      console.log('仅删除云端->',id)
       await bookMgr.deleteCloudBook(id)
     } else if (certain){
       // 没有指定cloud，全删
@@ -568,6 +570,7 @@ Page({
     // 检查bookList 在本地有没有
     for(let i in cloudBooksList){
       cloudBooksList[i]['info'] = {len:cloudBooksList[i]['len']};
+      cloudBooksList[i]['id']=cloudBooksList[i]['_id']
       delete cloudBooksList.len;
       for (let j in booksList){
         if(cloudBooksList[i]['id'] == booksList[j]['id']){
@@ -590,6 +593,7 @@ Page({
   /**下载云端book */
   download:async function(e){
     var id = e.currentTarget.dataset.id
+    console.log("####begin download -->",id)
     if (id == undefined && 'id' in currentBook) {
       id = currentBook['id']
       bookshelf = currentBook.bookshelf
@@ -611,7 +615,7 @@ Page({
         icon:'none'
       })
       try {
-        ok = await bookMgr.downloadBook(id)
+       ok = await bookMgr.downloadBook(id)
       } catch (e) { }
       wx.showToast({
         title: '下载完成！'

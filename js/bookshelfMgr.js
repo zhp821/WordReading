@@ -8,12 +8,12 @@ function bookshelfClass(){
   this.books = [];
   this.currentBook = {};
   // this.nowPage = {};
-  this.user_path = `${wx.env.USER_DATA_PATH}/bookshelf/`;
+  this.user_path = `${wx.env.USER_DATA_PATH}/book/`;
   // this.booksInfo_path = `${wx.env.USER_DATA_PATH}/bookshelf/bookInfo.info`;
   this.cloud = {
-    fileidPre:'cloud://release/',
+    fileidPre:'cloud://book/',
     user_bs: 'user_book',  // 4月12日改为 'user'  旧的：/user_bookshelf
-    share_bs:'share_bookshelf',
+    share_bs:'share_book',
     user_info:'user',
   }
   this.cache = {
@@ -341,7 +341,7 @@ function bookshelfClass(){
     this.getBooksInfo()
     let info = this.getBookInfo(id)
     this.deleteLocalBook(id,info)
-    this.deleteCloudBook(id,info)
+//    this.deleteCloudBook(id,info)
   },
 
   /**删除本地的book,忽视云端 */
@@ -387,8 +387,16 @@ function bookshelfClass(){
 
   /**删除云端book,忽视本地 */
   this.deleteCloudBook =async function (id,info=null) {
-    /**删除书，根据id, info用来校验 */
-    console.log('bookshelfMgr.deleteBook  ->', id)
+    // 删除云端数据库对应项
+    const db = wx.cloud.database()
+    const _ = db.command
+    var bookId = id
+    console.log('#######bookshelfMgr.deleteBook  ->', id)
+    db.collection('user_book').doc(bookId).remove({
+      success: function(res) {
+        console.log(res.data)
+      }
+    })    
     if(info == null){
       this.getBooksInfo()
       info = this.getBookInfo(id)
@@ -398,8 +406,6 @@ function bookshelfClass(){
     if (info[0] != undefined && 'id' in info[1]) {
       var deleteList = []
       // 删除云端文件
-      var openId = wx.getStorageSync('openid')
-
       if (info[1]['cloud'] != undefined) {
         if (info[1]['cloud'].length > 0) {
           console.log('开始删除云端文件 ->')
@@ -410,22 +416,7 @@ function bookshelfClass(){
               console.log('res ->', res)
             }
           })
-          // 删除云端数据库对应项
-          const db = wx.cloud.database()
-          const _ = db.command
-          var bookId = info[1]['id']
-          bookId = bookId.replace(/\./g, '*')
-          db.collection('user_book').doc(openId).update({
-            data: {
-              [bookId]: _.remove()
-            },
-            success(res) {
-              // console.log('db update_.remove success ->', res)
-            },
-            fail(res) {
-              console.log('db update_.remove fail ->', res)
-            }
-          })
+ 
         }
         // 清空cloud
         try{
@@ -519,31 +510,26 @@ function bookshelfClass(){
   this.doUpload =async function(openId,bookId,file='all'){
     /**上传包括两部分，一部分是txt文件，另一部分是info信息 */
     var that = this
-    console.log('开始上传 ->')
+    console.log('开始上传 ->',bookId)
     var info = this.getBookInfo(bookId)
 
     if (bookId == "cacheArticle"){
       // console.log('上传缓存')
       return {status:'error',tip:'缓存不能上传，请先保存！'}
     }
-
     var uploadList =[]
     if(file == 'all' || file == 'txt'){
       uploadList.push({
-        cp: `user/${openId}/bookshelf/${info[1]['id']}.txt`,
+        cp: `user/book/${info[1]['id']}.txt`,
         fp: this.user_path + info[1]['id'] + '.txt'
       })
     }
     if(file == 'all'  || file=='info'){
       uploadList.push({
-        cp: `user/${openId}/bookshelf/${info[1]['id']}.info`,
+        cp: `user/book/${info[1]['id']}.info`,
         fp: this.user_path + info[1]['id'] + '.info'
       })
     }
-    // var cloudPath = `user_bookshelf/${openId}/${info[1]['id']}.txt`
-    // var filePath = wx.env.USER_DATA_PATH + info[1]['path']
-    // console.log('cloudPath & filePath ->', cloudPath,filePath)
-
     for(var i in uploadList){
       let fileID = await new Promise((resolve)=>{
         wx.cloud.uploadFile({
@@ -551,7 +537,7 @@ function bookshelfClass(){
           filePath: uploadList[i]['fp'],
           success: res => {
             // console.log(res.fileID)
-            // console.log('上传文件成功 ->', res.fileID)
+            console.log('上传文件成功 ->', res.fileID)
             resolve(res.fileID)
           },
           fail: console.error
@@ -565,6 +551,7 @@ function bookshelfClass(){
       that.storageBooksInfo()
     }
     // 更新数据库list
+    console.log("@@@@@ update db ....->",bookId)
     await this.uploadDB(openId,info[1])
     return true
   }
@@ -572,94 +559,36 @@ function bookshelfClass(){
   /**云端数据库 booklist */
   this.uploadDB = async function(openId="",bookInfo){
     /**云储存无法获取目录下的所有文件，云端的book需要维护一个数据库list记录云端存着那些书*/
-    // console.log('upload DB')
     const db = wx.cloud.database()
-    const _ = db.command
     if(!openId){
       openId = wx.getStorageSync('openid')
     }
-    // openId = 'XMB1SlsqTi00tr5D_1'
-
-    // bookInfo = {
-    //   title:'xuniceshi222222222',
-    //   id:'xuniceshi-20190435-23.1k-HJFSD',
-    //   info:{len:10}
-    // }
-
-    let db_book = {
-      title: bookInfo['title'],
-      id: bookInfo['id'],
-      len: bookInfo['info']['len'],
-      intro: ''
-    }
-
     var bookId = bookInfo['id']
     bookId = bookId.replace(/\./g,'*')
-
-    // 直接update_.set
-    var db_update = await new Promise((resolve,reject)=>{
-      db.collection('user_book').doc(openId).update({
-        data: {
-          [bookId]: _.set(db_book)
-        },
-        success(res) {
-          // console.log('db unshift success ->', res)
-          resolve(res)
-        },
-        fail(res) {
-          console.log('db unshift fail ->', res)
-          reject(res)
-        }
-      })
-    })  
-
-    // 检查结果, 如果失败，【先add】,再重新【set】
-    if (db_update.stats.updated == 0){
-      // 上传失败，1.用户未使用过，add
-      var db_add = await new Promise((resolve,reject)=>{
-        db.collection('user_book').add({
-          data:{
-            _id: openId
-          },
-
-          success(res){
-            // console.log('db add ->',res)
-            resolve(res)
-          },
-          fail(res){
-            console.log('db add fail ->',res)
-            reject(res)
-          }
-        })
-      })
-      // 重新set
-      var db_update = await new Promise((resolve, reject) => {
-        db.collection('user_book').doc(openId).update({
-          data: {
-            [bookId]: _.set(db_book)
-          },
-          success(res) {
-            // console.log('db unshift success ->', res)
-            resolve(res)
-          },
-          fail(res) {
-            console.log('db unshift fail ->', res)
-            reject(res)
-          }
-        })
-      })
-    }
-
+    db.collection('user_book').add({
+      data: {
+        _id: bookId,
+        title: bookInfo['title'],
+        len: bookInfo['info']['len'],
+        intro: '',
+        openid: openId,
+        time: new Date().toLocaleString(),
+        role: 1,
+      },
+      success: function(res) {
+        // res 是一个对象，其中有 _id 字段标记刚创建的记录的 id
+        console.log(res)
+      }
+    })
   }
 
   /**下载云端的book */
   this.downloadBook = async function(id){
-    // cloud://release-bf6b22.7265-release-bf6b22/user/oYHhN5cMc2S6WQnjzI8yAQnyYiQE/bookshelf/2019412-1.42w-VQTX.info
     try{
       let openId = wx.getStorageSync('openid')
       // 云id
-      let txtFile = `${this.cloud.fileidPre}user/${openId}/bookshelf/${id}.txt`;
-      let infoFile = `${this.cloud.fileidPre}user/${openId}/bookshelf/${id}.info`;
+      let txtFile = `${this.cloud.fileidPre}user/book/${id}.txt`;
+      let infoFile = `${this.cloud.fileidPre}user/book/${id}.info`;
       let fileList = [txtFile, infoFile];
       // 本地路径
       let txtPath = `${this.user_path}${id}.txt`;
@@ -717,46 +646,19 @@ function bookshelfClass(){
   /**获取云端book List, 云数据库 */
   this.getCloudBooksList = async function(){
     const db = wx.cloud.database()
-    const _ = db.command
-    let openId;
-    try{
-      openId = wx.getStorageSync('openid')
-    }catch(e){}
-    if(!openId){
-      openId = await app.getOpenId()
-      console.log('get openId ->', openId)
-    }
     let data = await new Promise((resolve)=>{
-      db.collection('user_book').where({
-        _id: openId
-      }).get({
+      db.collection('user_book').get({
         success(res) {
-          // console.log('get cloud book list ->', res)
+          console.log('get cloud book list ->', res)
           resolve(res)
         },
         fail(res) {
           console.log('get cloud book list fia ->', res)
-
         }
       })
     })
-    // 解析data
-    var cloudList = []
-    for(let i in data.data[0]){
-      // 201942-16.43w-PZBE
-      // 2019412-64.08w-FOWW
-      // bookidpattern
-      let idPattern = /\d{3,8}-[\d/.wk/*]+?-[A-Z]{2,9}/;
-      if(i.match(idPattern)){
-        console.log('match id pattern ->',i)
-        cloudList.push(data.data[0][i])
-      }else{
-        // console.log('dont match id pattern ->',i)
-        // console.log(i.match(idPattern))
-      }
-    }
-    // console.log('clould list ->',cloudList)
-    return cloudList
+    console.log('clould list ->',data.data)
+    return data.data
   }
 
   this.addBookByShare = async function (shareLink) {

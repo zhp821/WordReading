@@ -92,7 +92,7 @@
     <image class="item-icon m-c" src="../../data/icon/cancel.svg" />
     <text class="item-title">取消</text>
   </view>
-  <view class="book-more-item m-u" bindtap="upload">
+  <view wx:if="{{role > 1000}}" class="book-more-item m-u" bindtap="upload">
     <image class="item-icon" src="../../data/icon/cloud_blue.svg" />
     <text class="item-title">上传</text>
   </view>
@@ -104,23 +104,23 @@
     <image class="item-icon" src="../../data/icon/share.svg" />
     <text class="item-title">分享</text>
   </view>
-  <view class="book-more-item m-cs" bindtap="shareBook">
+  <view wx:if="{{role > 1000}}" class="book-more-item m-cs" bindtap="shareBook">
     <image class="item-icon" src="../../data/icon/share.svg" />
     <text class="item-title">复制分享口令</text>
   </view>
-  <view class="book-more-item m-sc" bindtap="cancelShare">
+  <view wx:if="{{role > 1000}}" class="book-more-item m-sc" bindtap="cancelShare">
     <image class="item-icon" src="../../data/icon/share_grey.svg" />
     <text class="item-title">取消分享</text>
   </view>
-  <view class="book-more-item m-r" data-type="bookTitle" bindtap="{{bookshelf.inputTitle}}">
+  <view wx:if="{{role > 1000}}" class="book-more-item m-r" data-type="bookTitle" bindtap="{{bookshelf.inputTitle}}">
     <image class="item-icon" src="../../data/icon/rename_cursor.svg" />
     <text class="item-title">重命名</text>
   </view>
-  <view class="book-more-item m-de" bindtap="deleteBook">
+  <view wx:if="{{role > 1000}}" class="book-more-item m-de" bindtap="deleteBook">
     <image class="item-icon" src="../../data/icon/delete_red.svg" />
     <text class="item-title">删除</text>
   </view>
-  <view class="book-more-item m-m" bindtap="">
+  <view wx:if="{{role > 1000}}" class="book-more-item m-m" bindtap="">
     <image class="item-icon" src="../../data/icon/more.svg" />
     <text class="item-title">更多</text>
   </view>
