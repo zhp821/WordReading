@@ -225,7 +225,7 @@ Page({
   /**点击书，进入目录或开始阅读 */
   tapBook:async function(e){
     console.log('tapBook ->', e.currentTarget.dataset.id)
-    var id = e.currentTarget.dataset.id
+    var id = e.currentTarget.dataset.id.replace(/\*/g,'.')
     // 判断此Id是否在本地booKs中
     let check = bookMgr.getBookInfo(id)
     if(check[0] != undefined){
@@ -570,7 +570,7 @@ Page({
     // 检查bookList 在本地有没有
     for(let i in cloudBooksList){
       cloudBooksList[i]['info'] = {len:cloudBooksList[i]['len']};
-      cloudBooksList[i]['id']=cloudBooksList[i]['_id']
+      cloudBooksList[i]['id']=cloudBooksList[i]['_id'].replace(/\*/g,'.')
       delete cloudBooksList.len;
       for (let j in booksList){
         if(cloudBooksList[i]['id'] == booksList[j]['id']){
@@ -592,8 +592,7 @@ Page({
 
   /**下载云端book */
   download:async function(e){
-    var id = e.currentTarget.dataset.id
-    console.log("####begin download -->",id)
+    var id = e.currentTarget.dataset.id.replace(/\*/g,'.')
     if (id == undefined && 'id' in currentBook) {
       id = currentBook['id']
       bookshelf = currentBook.bookshelf
@@ -616,6 +615,7 @@ Page({
       })
       try {
        ok = await bookMgr.downloadBook(id)
+       this.refreshPage()
       } catch (e) { }
       wx.showToast({
         title: '下载完成！'

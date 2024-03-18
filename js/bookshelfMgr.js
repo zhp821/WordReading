@@ -11,7 +11,8 @@ function bookshelfClass(){
   this.user_path = `${wx.env.USER_DATA_PATH}/book/`;
   // this.booksInfo_path = `${wx.env.USER_DATA_PATH}/bookshelf/bookInfo.info`;
   this.cloud = {
-    fileidPre:'cloud://book/',
+    //cloud://cloud1-6gyjpsnqca2b4f98.636c-cloud1-6gyjpsnqca2b4f98-1324647503/user/book/2024318-1.03k-LHFB.txt
+    fileidPre:'cloud://cloud1-6gyjpsnqca2b4f98.636c-cloud1-6gyjpsnqca2b4f98-1324647503/user/book/',
     user_bs: 'user_book',  // 4月12日改为 'user'  旧的：/user_bookshelf
     share_bs:'share_book',
     user_info:'user',
@@ -102,16 +103,16 @@ function bookshelfClass(){
     // 设置阅读历史，position为已读位置,
     this.getBooksInfo()
     if(this.books.length > 0){
-      if (this.books[index]['id'] = id) {
+      if (this.books[index]['id'] == id) {
         // id与index匹配，添加/更新阅读历史记录
         let date = new Date()
-        if (Object.prototype.toString.call(this.books[index]['history']) == "[object Object]") {
-          this.books[index]['history']['read'] = position
-          this.books[index]['history']['time'] = date.getTime()
+        if (Object.prototype.toString.call(this.books[index][history]) == "[object Object]") {
+          this.books[index][history][read] = position
+          this.books[index][history][time] = date.getTime()
         } else {
-          this.books[index]['history'] = {}
-          this.books[index]['history']['read'] = position
-          this.books[index]['history']['time'] = date.getTime()
+          this.books[index][history] = {}
+          this.books[index][history][read] = position
+          this.books[index][history][time] = date.getTime()
         }
       }
       await this.storageBooksInfo()
@@ -583,12 +584,13 @@ function bookshelfClass(){
   }
 
   /**下载云端的book */
-  this.downloadBook = async function(id){
+  this.downloadBook = async function(bookId){
     try{
       let openId = wx.getStorageSync('openid')
+      let id = bookId.replace(/\*/g,'.')
       // 云id
-      let txtFile = `${this.cloud.fileidPre}user/book/${id}.txt`;
-      let infoFile = `${this.cloud.fileidPre}user/book/${id}.info`;
+      let txtFile = `${this.cloud.fileidPre}${id}.txt`;
+      let infoFile = `${this.cloud.fileidPre}${id}.info`;
       let fileList = [txtFile, infoFile];
       // 本地路径
       let txtPath = `${this.user_path}${id}.txt`;
@@ -597,15 +599,16 @@ function bookshelfClass(){
 
       const fs = wx.getFileSystemManager()
       for (let i in fileList) {
-        // console.log('--------------for----------------')
+        console.log('--------------for---------------->',fileList[i])
         let tempFile = await new Promise((resolve) => {
           wx.cloud.downloadFile({
             fileID: fileList[i],
             success(res) {
-              // console.log('download file success ->', res)
+              console.log('download file success ->', res)
               resolve(res.tempFilePath)
             },
             fail(res){
+              console.log("*****download error ->",res)
               reject(res)
             }
           })
@@ -627,7 +630,7 @@ function bookshelfClass(){
           })
         })
       }
-
+      
       // 读取info信息并返回
       let info = fs.readFileSync(pathList[1], 'utf-8')
       // console.log('download book ->',info)
@@ -635,7 +638,6 @@ function bookshelfClass(){
       // return info
       // 添加bookInfo
       await this.addBookInfo(info)
-
       return true
     }catch(e){
       return {stats:'error',tip:e}
@@ -839,26 +841,3 @@ function bookshelfClass(){
 
 
 module.exports.bookshelfClass = bookshelfClass
-
-
-
-
-// function getTempFileUrl(list) {
-    //   return new Promise((resolve, reject) => {
-    //     wx.cloud.getTempFileURL({
-    //       fileList: list,
-    //       success(res) {
-    //         resolve(res)
-    //       }
-    //     })
-    //   })
-    // }
-
-    // async function main() {
-    //   var list = ['cloud://release-bf6b22.7265-release-bf6b22/user_bookshelf/oYHhN5cMc2S6WQnjzI8yAQnyYiQE/201942-16.43w-PZBE.info']
-    //   var returnres = await getTempFileUrl(list)
-    //   console.log('async main -return ->', returnres)
-    // }
-
-    // console.log('==================================')
-    // main()

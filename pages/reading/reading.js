@@ -208,7 +208,7 @@ function articleClass(){
       var start = this.bookInfo[1]['history']['read']
       if (typeof (start) == 'number') {
         // 有可用阅读历史
-        // this.page.start = start
+        this.page.start = start
       }
     } catch (e) {}
 
@@ -533,7 +533,7 @@ function articleClass(){
       let len = this.calcLenByindex(this.log_sindex)
       let spoint = this.page.start + len
       // 调用appjs，避免页面销毁导致未储存
-      app.setBookHistory(this.bookInfo[0], this.bookInfo[1]['id'], spoint)
+      app.setBookHistory(this.bookInfo[0], this.bookInfo[0]['id'], spoint)
       // let bookMgr = new bookmgr.bookshelfClass()
       // bookMgr.setHistory(this.bookInfo[0], this.bookInfo[1]['id'], spoint)
       // console.log('set history finish')
