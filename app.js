@@ -96,7 +96,6 @@ App({
     console.log('------------------storage - openID -> ',openId)
   },
   setBookHistory:function(index,id,history){
-    console.log("#######%d++++++%d++++++++%d",index,id,history)
     let bookmgr = require('./js/bookshelfMgr.js');
     let bookMgr = new bookmgr.bookshelfClass()
     bookMgr.setHistory(index, id, history)

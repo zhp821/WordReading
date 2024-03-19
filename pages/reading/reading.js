@@ -21,7 +21,7 @@ var swiperIndex = 0; // 记录当前显示的swiper index
 
 var inputText;  // 保存时输入的Text
 
-var show_text = "Tottenham HotspurDEL F.C. (Spurs) have a long history as an English football club based in Tottenham, London. They came into existence in 1882, became professional in 1895, and in 1901 became the only non-League club to win the FA Cup since the establishment of the Football League. \n更新说明：\n从剪贴板导入按钮移到顶部（圆圈+箭头）\n查词功能未完成（顶部的放大镜图标）\n书签、阅读历史初步完善"
+var show_text = "^^^"
 
 function articleClass(){
   /** */
@@ -932,11 +932,12 @@ Page({
     sp = new setPositionClass()
     sp.setScreenSize()  // 获取屏幕尺寸
 
-
+    bookid="tmp"
     if('bookId' in options){
       // 尝试打开bookId所指的文章
       // article.getArticle(options['bookId'])
       article.bookMain(options['bookId'])
+      bookid=options['bookId']
     }else{
       article.textMain(show_text)
     }
@@ -1069,13 +1070,20 @@ Page({
       this.setData({
          lookUp_result: result_data,
       })
-      // console.log('query_result->',result_data)
-
-      // var query_sentence = article.article['sl'][word_index[0]]
-
-      // 测试 iciba
-      // var iciba = new icibaClass()
-      // iciba.queryWord(query_word)
+      wx.cloud.callFunction({
+        // 云函数名称
+        name: 'saveWord',
+        // 传给云函数的参数
+        data: {
+          bookid: bookid,
+          word:query_word,
+          content:result_data,
+        },
+        success: function(res) {
+          console.log(res.result)
+        },
+        fail: console.error
+      })
     }
   },
 
