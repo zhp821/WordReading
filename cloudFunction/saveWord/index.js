@@ -17,6 +17,7 @@ exports.main = async (event, context) => {
       querytime:new Date().toLocaleString(),
       bookid:event.bookid,
       [wordParam]:event.content,
+      booktitle:event.booktitle,
      }}).then(res => {
        console.log(res)
      })
@@ -28,6 +29,7 @@ exports.main = async (event, context) => {
       data: {
         [wordParam]: event.content,
         querytime:new Date().toLocaleString(),
+        booktitle:event.booktitle,
       },
     })
   }

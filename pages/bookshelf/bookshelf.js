@@ -225,7 +225,7 @@ Page({
   /**点击书，进入目录或开始阅读 */
   tapBook:async function(e){
     console.log('tapBook ->', e.currentTarget.dataset.id)
-    var id = e.currentTarget.dataset.id.replace(/\*/g,'.')
+    var id = e.currentTarget.dataset.id
     // 判断此Id是否在本地booKs中
     let check = bookMgr.getBookInfo(id)
     if(check[0] != undefined){
@@ -592,7 +592,7 @@ Page({
 
   /**下载云端book */
   download:async function(e){
-    var id = e.currentTarget.dataset.id.replace(/\*/g,'.')
+    var id = e.currentTarget.dataset.id
     if (id == undefined && 'id' in currentBook) {
       id = currentBook['id']
       bookshelf = currentBook.bookshelf

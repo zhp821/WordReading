@@ -31,6 +31,7 @@ function articleClass(){
   this.preArticle = {};    // 后一页
   this.aftArticle = {};    // 前一页
   this.bookInfo = []; // [index,info]
+  this.title="...";
   this.page = {
     pageSize:4000,
     start:0,
@@ -412,31 +413,6 @@ function articleClass(){
     }
   }
 
-  /**改用this.log_sindex || 获取【当前阅读位置】，异步 */
-  // this.getPosition = async function(){
-    // console.log('set History')
-    // let history = {
-    //   'start':0,
-    //   'page':1,
-    //   'scrollY':0
-    // }
-    // history.start = this.page.start
-    // history.page = this.page.now;
-    // let scroll = await new Promise((resolve,reject)=>{
-    //   wx.createSelectorQuery().select('.article-container-scroll').fields({
-    //     scrollOffset: true
-    //   },
-    //   res=>{
-    //     resolve(res)
-    //   }
-    //   ).exec()
-    // })
-    // let scrollY = scroll.scrollTop
-    // history.scrollY = scrollY
-    // // console.log('test test ->', history)
-    // return history
-  // }
-
   /**计算目标句子距离【此页开始】的长度, page position -> text position */
   this.calcLenByindex = function(sindex){
     var len = 0;
@@ -533,10 +509,7 @@ function articleClass(){
       let len = this.calcLenByindex(this.log_sindex)
       let spoint = this.page.start + len
       // 调用appjs，避免页面销毁导致未储存
-      app.setBookHistory(this.bookInfo[0], this.bookInfo[0]['id'], spoint)
-      // let bookMgr = new bookmgr.bookshelfClass()
-      // bookMgr.setHistory(this.bookInfo[0], this.bookInfo[1]['id'], spoint)
-      // console.log('set history finish')
+      app.setBookHistory(this.bookInfo[0], this.bookInfo[1]['id'], spoint)
     }
 
   }
@@ -806,82 +779,6 @@ function setPositionClass(){
   }
 }
 
-/**已将operateClass的主要功能移到wxs里 */
-// function operateClass_DEL(){
-  // this.currentTarget = ''
-  // this.touchMoveCoordinate =[]
-  // this.transBoxIsUp = false
-
-  // this.touchStart = function(e){
-
-  // }
-  
-  // this.touchMove = function(e){
-  //   console.log('operateClass.touchMove', e)
-  //   var currentCoordinate = [e.changedTouches[0].clientX, e.changedTouches[0].clientY]
-  //   if(this.touchMoveCoordinate.length == 0){
-  //     this.touchMoveCoordinate[0] = currentCoordinate
-  //   }else{
-  //     this.touchMoveCoordinate[1]= currentCoordinate
-  //   }
-  // }
-
-  // this.touchEnd = function(e){
-  //   console.log('operateClass.touchEnd', e)
-  //   if(this.touchMoveCoordinate.length > 1){
-  //     /** 滑动 */
-  //     var moveX = this.touchMoveCoordinate[1][0] - this.touchMoveCoordinate[0][0]
-  //     var moveY = this.touchMoveCoordinate[1][1] - this.touchMoveCoordinate[0][1]
-  //     if(Math.abs(moveX) > 20 & Math.abs(moveY) < 30){
-  //       /** 横向滑动
-  //        * 翻译整个句子
-  //        */
-  //       console.log('横向滑动 翻译', moveX, moveY)
-  //       let sindex = e.target.dataset.sindex
-  //       let sentence = article.article['sl'][sindex]
-  //       readingPage.querySentence(sentence)
-  //       // youdao.translate(sentence)
-  //       this.setTransBoxUp()
-  //       //test aliTTS :播放结果不理性，长句无法播放，开发工具端表现稍好
-  //       // const aliTTS = new aliTTSClass()
-  //       // aliTTS.test(article['article']['sl'][sindex])
-
-  //     }else{
-  //       console.log('其他滑动 xy', moveX, moveY)
-  //     }
-  //   }else if(this.touchMoveCoordinate.length == 1){
-  //     /** 快速滑动 */
-  //     console.log('快速滑动 翻译', moveX, moveY)
-  //     let sindex = e.target.dataset.sindex
-  //     let sentence = article.article['sl'][sindex]
-  //     readingPage.querySentence(sentence)
-  //     // youdao.translate(sentence)
-  //     this.setTransBoxUp()
-  //   }
-  //   // 清除记录
-  //   this.touchMoveCoordinate = []
-  //   // 记录单词索引
-  //   bookmarkPoint = [e.currentTarget.dataset.sindex, e.currentTarget.dataset.windex]
-  // }
-
-  // // this.setTransBoxUp = function(){
-  // //   this.transBoxIsUp = true
-  // //   that.setData({
-  // //     transBox:{'style':'transform:translateY(-25.5vh);'}
-  // //   })
-  // // }
-
-  // // this.setTransBoxDown = function(){
-  // //   if(this.transBoxIsUp == true){
-  // //     that.setData({
-  // //       transBox: { 'style': 'transform:translateY(0);' },
-  // //     })
-  // //   }
-  // // }
-// }
-
-
-
 Page({
   data: {
     userInfo: {},
@@ -933,11 +830,13 @@ Page({
     sp.setScreenSize()  // 获取屏幕尺寸
 
     bookid="tmp"
+    booktitle="剪贴板"
     if('bookId' in options){
       // 尝试打开bookId所指的文章
       // article.getArticle(options['bookId'])
       article.bookMain(options['bookId'])
       bookid=options['bookId']
+      booktitle=article.bookInfo[1].title
     }else{
       article.textMain(show_text)
     }
@@ -1078,6 +977,7 @@ Page({
           bookid: bookid,
           word:query_word,
           content:result_data,
+          booktitle:article.bookInfo[1]['title']
         },
         success: function(res) {
           console.log(res.result)

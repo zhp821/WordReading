@@ -64,14 +64,6 @@ App({
     var openId = await new Promise ((resolve,reject)=>{
       wx.cloud.callFunction({
         name: 'getOpenId',
-        // complete: res => {
-        //   // console.log('call function test result', res)
-        //   wx.setStorage({
-        //     key: 'openid',
-        //     data: res.result.openid
-        //   })
-        //   resolve(res.result)
-        // }
       }).then(res=>{
         // console.log('promise then ->',res.result.openid)
         var openid = res.result.openid
