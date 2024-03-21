@@ -1,4 +1,15 @@
 // pages/wordbook/wordbook.js
+
+/**获取云端book word, 云数据库 */
+async function getCloudWordList(bookid) {
+ const db = wx.cloud.database()
+ var openid=wx.getStorageSync('openid')
+ console.log("*******查询条件****->",openid+"$$"+bookid)
+ let data = await  db.collection('user_book_word').where({
+  '_openid':openid,'bookid':bookid}).get()
+ return data.data
+}
+
 Page({
 
   /**
@@ -6,14 +17,29 @@ Page({
    */
   data: {
     systemInfo:null,
+    bookword:{},
+    title:'请先选择...'
   },
-
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    var bookid = wx.getStorageSync('bookid')
+    var bookword={}
+    var title='请先选择...'
+    if (bookid != '') {
+      bookword= getCloudWordList(bookid)
+      console.log('bookword ->', bookword)
+      if(bookword.length>0){
+        title=bookword['booktitle']
+      }else{
+        bookword={}
+      }
+    }
     this.setData({
-      systemInfo:wx.getSystemInfoSync()
+      systemInfo:wx.getSystemInfoSync(),
+      title:title,
+      bookword:bookword
     })
   },
 

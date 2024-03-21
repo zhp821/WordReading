@@ -837,6 +837,10 @@ Page({
       article.bookMain(options['bookId'])
       bookid=options['bookId']
       booktitle=article.bookInfo[1].title
+      wx.setStorage({
+        key:'bookid',
+        data:bookid
+      })
     }else{
       article.textMain(show_text)
     }

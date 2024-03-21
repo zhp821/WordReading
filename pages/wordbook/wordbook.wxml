@@ -2,6 +2,6 @@
 <wxs module="setNavHeight" src="../../js/setNavHeight.wxs" />
 
 <view class="navigationBar"  wxs="{{systemInfo}}" change:wxs="{{setNavHeight.setNavHeight}}">
-  <view class="nav-title">生词本</view>
+  <view class="nav-title">{{title}}</view>
 </view>
 

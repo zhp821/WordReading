@@ -8,12 +8,12 @@ exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
   const db=cloud.database()
   let data = await  db.collection('user_book_word').where({
-    'openid': wxContext.OPENID,
+    '_openid': wxContext.OPENID,
     'bookid':event.bookid}).get()
   let wordParam="#"+event.word
   if(data.data.length === 0){
     db.collection('user_book_word').add({data:{
-      openid: wxContext.OPENID,
+      _openid: wxContext.OPENID,
       querytime:new Date().toLocaleString(),
       bookid:event.bookid,
       [wordParam]:event.content,
@@ -23,7 +23,7 @@ exports.main = async (event, context) => {
      })
   }else{
     await db.collection('user_book_word').where({
-      openid: wxContext.OPENID,
+      '_openid': wxContext.OPENID,
       'bookid':event.bookid,
     }).update({
       data: {
