@@ -18,7 +18,10 @@ function setNavHeight(systemInfo, oldValue, ownerInstance, instance){
     })
   }
 }
-
+// function trim(str){
+//   console.log("**********->",str)
+//   return str.replace('/\s+/g', '')
+// }
 function setNavPadding(systemInfo, oldValue, ownerInstance, instance){
   console.log('set nav height--------------------------------')
   if (systemInfo) {
@@ -40,5 +43,5 @@ function setNavPadding(systemInfo, oldValue, ownerInstance, instance){
 
 module.exports = {
   setNavHeight:setNavHeight,
-  setNavPadding: setNavPadding
+  setNavPadding: setNavPadding,
 }

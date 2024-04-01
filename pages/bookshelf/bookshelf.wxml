@@ -72,8 +72,8 @@
     <text class="menu-tip">打开剪贴板内容</text>
   </view>
   <view class="menu-button" data-id="3">
-    <image class="menu-button-icon" src="../../data/icon/share.svg" bindtap="getShareBook"/>
-    <text class="menu-tip">获取分享</text>
+    <image class="menu-button-icon" src="../../data/icon/share.svg" bindtap="getMessageFile"/>
+    <text class="menu-tip">获取聊天文件</text>
   </view>
   <view hidden class="menu-button" data-id="4">
     <image class="menu-button-icon" src="" />

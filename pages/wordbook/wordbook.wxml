@@ -1,19 +1,22 @@
 <!--pages/wordbook/wordbook.wxml-->
 <wxs module="setNavHeight" src="../../js/setNavHeight.wxs" />
-<wxs module="indexofStr">
-	module.exports.includes = function (str, str_) {
-		return str.indexOf(str_);
-	}
-</wxs>
 <view class="navigationBar"  wxs="{{systemInfo}}" change:wxs="{{setNavHeight.setNavHeight}}">
   <view class="nav-title">{{title}}</view>
 </view>
 <view class="container">
-<view wx:for="{{bookword}}" wx:for-index="key" wx:for-item="value">
-<view wx:if="{{value['word'].length>0}}" data-index="{{key}}"> 
-<text>{{value['word']}}</text>
-[{{value['ukphone']}}]:{{value['explain']}}【[{{value['exam_type']}}]】
+<view wx:for="{{bookword}}"   wx:key="index" wx:for-index="index" wx:for-item="value">
+<view wx:if="{{value['word'].length>0}}" data-word="{{value['word']}}"
+ class="word_block" bindtap="delWord"> 
+<text class="word-class">{{value['word']}}</text>
+<text wx:if="{{value['ukphone']}}">[{{value['ukphone']}}]</text>:{{value['explain']}}<text wx:if="{{value['exam_type']}}" class="word-exam-type">【{{value['exam_type']}}】</text>
 </view>
 </view>
+<view class="top-column">
+  <view class="operate-bar">
+    <image class="nav-button" src="../../data/icon/save.svg" id="nsd" data-play="hover" bindtap="shareWord" data-tip="导出" bindlongtap="longtapTip" />
+    <image class="nav-button" src="../../data/icon/sound.svg" id="nsd" data-play="hover" bindtap="changeWord" data-tip="选择" bindlongtap="longtapTip" />
+  </view> 
+</view>
+
 </view>
 

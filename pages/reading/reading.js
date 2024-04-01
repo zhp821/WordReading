@@ -621,7 +621,7 @@ function aliTTSClass(){
 
 function getClipboardClass() {
   this.clipboardData;
-
+  this.booktitle;
   this.getClipboard = async function(){
     var data = await new Promise((resolve,reject)=>{
       wx.getClipboardData({
@@ -671,7 +671,7 @@ function getClipboardClass() {
     // console.log('text ->',text)
     var bookMgr = new bookmgr.bookshelfClass()
     // var id = bookMgr.addCacheByText(text)
-    var id = await bookMgr.addBookByText(text,'剪贴板导入','')
+    var id = await bookMgr.addBookByText(text,this.booktitle,'')
     console.log('导入id——》',id)
     article.bookMain(id)
   }
@@ -849,7 +849,11 @@ Page({
       if (options['todo'] == "openClipboard"){
         // 直接打开剪贴板内容
         // this.checkClipboard()
+        if(options['booktitle']){
+          gcb.booktitle=options['booktitle']
+        }
         await gcb.getClipboard()
+
         gcb.importData()
       }
     }
@@ -858,33 +862,8 @@ Page({
       systemInfo:wx.getSystemInfoSync()
     })
 
-
-
-
-    /**移到wxs中 operate  Class 实例化
-     * 用户操作
-    */
-    // ope = new operateClass()
-
-    // require test
-    // console.log('=================Test=================')
-    // var te = new test.test()
-    // te.testthis()
-
     var bookMgr = new bookmgr.bookshelfClass()
-    // bookMgr.uploadDB()
-    // bookMgr.getCloudBooksList()
-    // bookMgr.downloadBook()
-
-    // wx.cloud.callFunction({
-    //   name: 'getToken',
-    //   data: {},
-    //   complete: res => {
-    //     console.log('callFunction getToken test result: ', res)
-    //   },
-    // })
-
-
+    
     if (app.globalData.userInfo) {
       this.setData({
         userInfo: app.globalData.userInfo,
@@ -969,7 +948,7 @@ Page({
       // setData查词结果,位置
       let result_data = await dict.queryWord(query_word)
       result_data.id = id;
-      console.log('result_data----->',result_data)
+      //console.log('result_data----->',result_data)
       this.setData({
          lookUp_result: result_data,
       })
@@ -1005,7 +984,7 @@ Page({
       // console.log('dataset-word->',word)
     }
 
-    word = word.replace(/\W/, '')
+    word = word.replace(/\W/, '').replace(/\s/g, "")
     let id = e.currentTarget.id;
     let positionData = await sp.setPosition(id);
     positionData.id = id;
@@ -1175,11 +1154,16 @@ Page({
   },
 
   /**保存剪贴板内容为一本书 */
-  saveBookByClip:e=>{
-    // 保存文章/书，从剪贴板
-    readingPage.setData({
-      inputBox: 'saveBook',
-      inputFocus:true,
+  saveBookByClip:async e=>{
+    // readingPage.setData({
+    //   inputBox: 'saveBook',
+    //   inputFocus:true,
+    // })
+    var bookId = wx.getStorageSync('bookid')
+    user_path = `${wx.env.USER_DATA_PATH}/book/`+bookId+'.txt';
+    console.log("************->",user_path)
+    await wx.shareFileMessage({
+      filePath: user_path,
     })
   },
 

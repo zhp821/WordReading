@@ -79,7 +79,7 @@
   </view>
   <view class="navigation-bar">
     <image class="nav-button" src="../../data/icon/bookshelf.svg" data-url="../bookshelf/bookshelf" bindtap="navigateTo" data-tip="书架" bindlongtap="longtapTip" />
-    <image class="nav-button" src="../../data/icon/save_w.svg" bindtap="saveBookByClip" data-tip="保存剪贴板内容" bindlongtap="longtapTip" />
+    <image class="nav-button" src="../../data/icon/save_w.svg" bindtap="saveBookByClip" data-tip="保存分享" bindlongtap="longtapTip" />
     <!--image class="nav-button" src="../../data/icon/word.png" data-url="../wordbook/wordbook" bindtap="navigateTo" /-->
     <image class="nav-button" src="../../data/icon/search_w.svg" id="nds" data-play="hover" bindtap="{{reading.showHiddenDict}}" data-tip="词典查词" bindlongtap="longtapTip" />
     <image class="nav-button" src="../../data/icon/me.svg" />

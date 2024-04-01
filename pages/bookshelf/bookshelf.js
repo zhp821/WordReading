@@ -479,6 +479,30 @@ Page({
   tapBook_del:function(e){
     console.log('e ->',e)
   },
+  getMessageFile:async function(e){
+    wx.chooseMessageFile({
+      count: 1,
+      type: 'file',
+      success (res) {
+        var file = res.tempFiles[0]
+        console.log("************>",file)
+        try {
+          const fs = wx.getFileSystemManager()
+          const rest = fs.readFileSync(file.path, 'utf8', 0)
+          wx.setClipboardData({
+            data: rest ,
+            success: (reso)=> {
+              wx.navigateTo({
+                url: '../../pages/reading/reading?todo=' + 'openClipboard'+'&booktitle='+file.name
+              })
+            }
+          })
+        } catch(e) {
+          console.error(e)
+        }
+      }
+    })
+  },
 
   // 获取分享的书，通过shareLink, 检查剪贴板
   getShareBook:async function (e) {
