@@ -11,12 +11,10 @@ async function getStoreDB(options){
   // 验证type1,2是否合法
 
   // 数据库id
-  if (type1 == "cet4") type1 = 'Find-cet4-4527254'
-  if (type1 == "cet6") type1 = 'Find-cet6-1452524'
-  if (type1 == "postgraduate") type1 = 'Find-postgraduate-183844'
-  // if (type1 == "cet4") type1 = 'Find-cet4-4527254'
+  if (type1 == "") type1 = 'pet'
 
-  // console.log('type ->', type1, type2)
+
+  console.log('type ->', type1, type2)
   // 获取数据
   const db = wx.cloud.database()
   const _ = db.command
@@ -47,15 +45,15 @@ function setTitle(options){
   let title =''
 
   // 标题
-  if (type1 == "cet4") title = '四级'
-  if (type1 == "cet6") title = '六级'
-  if (type1 == "postgraduate") title = '考研'
+  if (type1 == "ket") title = 'Ket'
+  if (type1 == "pet") title = 'Pet'
+  if (type1 == "fce") title = 'Fce'
 
   // 副标题
-  if(type2 == 'reading') title = title + '-阅读'
+  if(type2 == 'word') title = title + '-单词'
   if (type2 == 'writing') title = title + '-写作'
-  if (type2 == 'listening') title = title + '-听力'
-  if (type2 == 'translate') title = title + '-翻译'
+  if (type2 == 'reading') title = title + '-阅读'
+  if (type2 == 'translate') title = title + '-ChatAI'
 
   return title
 }

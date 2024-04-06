@@ -930,7 +930,6 @@ Page({
 
   // 查词，并setData, wxs调用此函数
   lookUpWord:async function(e){
-    console.log(e)
     var word_index = [e.currentTarget.dataset['sindex'], e.currentTarget.dataset['windex']]
     var query_word = article.article['wl'][word_index[0]][word_index[1]]
     query_word = query_word.replace(/\W/,'')
@@ -944,7 +943,6 @@ Page({
       explainBox_position: positionData
     })
     if(query_word != ''){
-      console.log(query_word)
       // setData查词结果,位置
       let result_data = await dict.queryWord(query_word)
       result_data.id = id;
@@ -964,6 +962,7 @@ Page({
         },
         success: function(res) {
           console.log(res.result)
+          playWordAudio(dict, '')
         },
         fail: console.error
       })
@@ -1018,6 +1017,7 @@ Page({
     // word_audio.play()
     // console.log(e)
     var type = e.currentTarget.dataset.type
+    console.log("----->play audio type ---",type)
     playWordAudio(dict, type)
   },
 

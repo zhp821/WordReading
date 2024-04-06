@@ -85,7 +85,7 @@ function youdaoClass() {
         header: youdao.request_para.header,
         success(res) {
           // 请求成功返回，
-          console.log('youdaoRequest: result =>', res)
+          console.log('youdaoRequest: ---result =>', res)
           resolve(res)
         }
       })
@@ -159,7 +159,7 @@ function youdaoClass() {
         let url = youdao.youdao_audio_url + youdao_word['ukspeech']
         let path = wx.env.USER_DATA_PATH + '/temp/uks.mp3'
         // youdao.downloadAudio(url, path)
-        download(url,path)
+         download(url,path)
         youdao.audio.uks = path
       } else {
         youdao.audio.uks = ''
@@ -189,8 +189,6 @@ function youdaoClass() {
 
       // 分类
       youdao.query_result['exam_type'] = youdao.youdao_request_data['ec']['exam_type']
-
-      console.log(youdao.query_result)
     } else if (false) {
       /** 尝试解析其他词典内容 */
 
